@@ -51,7 +51,7 @@ const HoldingsTable = ({ refreshTrigger }) => {
             {holdings.map((holding) => (
               <tr key={holding.symbol} className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
                 <td className="p-3 flex items-center">
-                  <img src={`https://logo.clearbit.com/${holding.name.toLowerCase().replace(' inc.', '').replace(' llc', '').replace(' corporation', '').replace('.com,', '')}.com`} alt={holding.name} className="h-8 w-8 mr-4 rounded-full" onError={(e) => { e.target.onerror = null; e.target.src="https://via.placeholder.com/32"; }}/>
+                  <img src={holding.logoUrl} alt={holding.name} className="h-8 w-8 mr-4 rounded-full"/>
                   <span className="font-medium text-gray-800 dark:text-white">{holding.name}</span>
                 </td>
                 <td className="p-3 text-gray-500 dark:text-gray-400">{holding.symbol}</td>
@@ -75,7 +75,7 @@ const HoldingsTable = ({ refreshTrigger }) => {
           <div key={holding.symbol} className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 mb-4 shadow">
             <div className="flex justify-between items-center mb-4">
               <div className="flex items-center">
-                <img src={`https://logo.clearbit.com/${holding.name.toLowerCase().replace(' inc.', '').replace(' llc', '').replace(' corporation', '').replace('.com,', '')}.com`} alt={holding.name} className="h-10 w-10 mr-4 rounded-full" onError={(e) => { e.target.onerror = null; e.target.src="https://via.placeholder.com/40"; }}/>
+                <img src={holding.logoUrl} alt={holding.name} className="h-10 w-10 mr-4 rounded-full"/>
                 <div>
                   <p className="font-bold text-gray-800 dark:text-white">{holding.name}</p>
                   <p className="text-sm text-gray-500 dark:text-gray-400">{holding.symbol}</p>

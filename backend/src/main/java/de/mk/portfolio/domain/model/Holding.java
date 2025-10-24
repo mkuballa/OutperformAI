@@ -17,8 +17,9 @@ public class Holding {
     private final BigDecimal dailyChangePercent;
     private final BigDecimal totalChangeValue;
     private final BigDecimal totalChangePercent;
+    private final String logoUrl;
 
-    public Holding(UUID id, UUID portfolioId, String name, String symbol, Integer quantity, BigDecimal price, BigDecimal purchasePrice, LocalDate purchaseDate, BigDecimal dailyChangeValue, BigDecimal dailyChangePercent, BigDecimal totalChangeValue, BigDecimal totalChangePercent) {
+    public Holding(UUID id, UUID portfolioId, String name, String symbol, Integer quantity, BigDecimal price, BigDecimal purchasePrice, LocalDate purchaseDate, BigDecimal dailyChangeValue, BigDecimal dailyChangePercent, BigDecimal totalChangeValue, BigDecimal totalChangePercent, String logoUrl) {
         this.id = id;
         this.portfolioId = portfolioId;
         this.name = name;
@@ -31,6 +32,7 @@ public class Holding {
         this.dailyChangePercent = dailyChangePercent;
         this.totalChangeValue = totalChangeValue;
         this.totalChangePercent = totalChangePercent;
+        this.logoUrl = logoUrl;
     }
 
     public UUID getId() {
@@ -81,6 +83,10 @@ public class Holding {
         return totalChangePercent;
     }
 
+    public String getLogoUrl() {
+        return logoUrl;
+    }
+
     public static Builder builder() {
         return new Builder();
     }
@@ -98,6 +104,7 @@ public class Holding {
         private BigDecimal dailyChangePercent;
         private BigDecimal totalChangeValue;
         private BigDecimal totalChangePercent;
+        private String logoUrl;
 
         public Builder id(UUID id) {
             this.id = id;
@@ -159,8 +166,13 @@ public class Holding {
             return this;
         }
 
+        public Builder logoUrl(String logoUrl) {
+            this.logoUrl = logoUrl;
+            return this;
+        }
+
         public Holding build() {
-            return new Holding(id, portfolioId, name, symbol, quantity, price, purchasePrice, purchaseDate, dailyChangeValue, dailyChangePercent, totalChangeValue, totalChangePercent);
+            return new Holding(id, portfolioId, name, symbol, quantity, price, purchasePrice, purchaseDate, dailyChangeValue, dailyChangePercent, totalChangeValue, totalChangePercent, logoUrl);
         }
     }
 }

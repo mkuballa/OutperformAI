@@ -1,0 +1,1 @@
+ALTER TABLE holding ADD COLUMN logo_url VARCHAR(255);

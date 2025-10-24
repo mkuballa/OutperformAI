@@ -99,7 +99,8 @@ public class PortfolioController {
                 holding.getDailyChangeValue(),
                 holding.getDailyChangePercent(),
                 holding.getTotalChangeValue(),
-                holding.getTotalChangePercent()
+                holding.getTotalChangePercent(),
+                holding.getLogoUrl()
         );
     }
 
@@ -129,7 +130,8 @@ public class PortfolioController {
             BigDecimal dailyChangeValue,
             BigDecimal dailyChangePercent,
             BigDecimal totalChangeValue,
-            BigDecimal totalChangePercent
+            BigDecimal totalChangePercent,
+            String logoUrl
     ) {}
 
     record PortfolioHistoryResponse(

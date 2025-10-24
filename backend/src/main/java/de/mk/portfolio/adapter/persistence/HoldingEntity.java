@@ -23,6 +23,7 @@ public class HoldingEntity {
     private BigDecimal dailyChangePercent;
     private BigDecimal totalChangeValue;
     private BigDecimal totalChangePercent;
+    private String logoUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "portfolio_id")
@@ -31,7 +32,7 @@ public class HoldingEntity {
     public HoldingEntity() {
     }
 
-    public HoldingEntity(UUID id, String name, String symbol, Integer quantity, BigDecimal price, BigDecimal purchasePrice, LocalDate purchaseDate, BigDecimal dailyChangeValue, BigDecimal dailyChangePercent, BigDecimal totalChangeValue, BigDecimal totalChangePercent, PortfolioEntity portfolio) {
+    public HoldingEntity(UUID id, String name, String symbol, Integer quantity, BigDecimal price, BigDecimal purchasePrice, LocalDate purchaseDate, BigDecimal dailyChangeValue, BigDecimal dailyChangePercent, BigDecimal totalChangeValue, BigDecimal totalChangePercent, String logoUrl, PortfolioEntity portfolio) {
         this.id = id;
         this.name = name;
         this.symbol = symbol;
@@ -43,6 +44,7 @@ public class HoldingEntity {
         this.dailyChangePercent = dailyChangePercent;
         this.totalChangeValue = totalChangeValue;
         this.totalChangePercent = totalChangePercent;
+        this.logoUrl = logoUrl;
         this.portfolio = portfolio;
     }
 
@@ -132,6 +134,14 @@ public class HoldingEntity {
 
     public void setTotalChangePercent(BigDecimal totalChangePercent) {
         this.totalChangePercent = totalChangePercent;
+    }
+
+    public String getLogoUrl() {
+        return logoUrl;
+    }
+
+    public void setLogoUrl(String logoUrl) {
+        this.logoUrl = logoUrl;
     }
 
     public PortfolioEntity getPortfolio() {

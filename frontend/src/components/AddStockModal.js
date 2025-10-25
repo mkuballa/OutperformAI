@@ -17,6 +17,7 @@ const AddStockModal = ({ isOpen, onClose, onStockAdded }) => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
+            portfolioId: 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
             symbol: symbol,
             quantity: parseFloat(quantity),
             purchasePrice: purchasePrice ? parseFloat(purchasePrice) : 0,

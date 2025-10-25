@@ -73,11 +73,12 @@ public class PortfolioPersistenceAdapter implements
     private Portfolio mapToDomain(PortfolioEntity entity) {
         return Portfolio.builder()
                 .id(entity.getId())
-                .totalValue(entity.getTotalValue())
-                .dailyChangeValue(entity.getDailyChangeValue())
-                .dailyChangePercent(entity.getDailyChangePercent())
-                .totalChangeValue(entity.getTotalChangeValue())
-                .totalChangePercent(entity.getTotalChangePercent())
+                .totalValue(entity.getTotalValue() != null ? entity.getTotalValue() : BigDecimal.ZERO)
+                .dailyChangeValue(entity.getDailyChangeValue() != null ? entity.getDailyChangeValue() : BigDecimal.ZERO)
+                .dailyChangePercent(entity.getDailyChangePercent() != null ? entity.getDailyChangePercent() : BigDecimal.ZERO)
+                .totalChangeValue(entity.getTotalChangeValue() != null ? entity.getTotalChangeValue() : BigDecimal.ZERO)
+                .totalChangePercent(entity.getTotalChangePercent() != null ? entity.getTotalChangePercent() : BigDecimal.ZERO)
+                .holdings(entity.getHoldings().stream().map(h -> mapToDomain(h)).collect(Collectors.toList()))
                 .build();
     }
 
@@ -108,6 +109,7 @@ public class PortfolioPersistenceAdapter implements
                 .dailyChangePercent(entity.getDailyChangePercent())
                 .totalChangeValue(entity.getTotalChangeValue())
                 .totalChangePercent(entity.getTotalChangePercent())
+                .logoUrl(entity.getLogoUrl())
                 .build();
     }
 
@@ -124,8 +126,11 @@ public class PortfolioPersistenceAdapter implements
         entity.setDailyChangePercent(holding.getDailyChangePercent());
         entity.setTotalChangeValue(holding.getTotalChangeValue());
         entity.setTotalChangePercent(holding.getTotalChangePercent());
+        entity.setLogoUrl(holding.getLogoUrl());
         // Set the portfolio relationship
-        portfolioRepository.findById(holding.getPortfolioId()).ifPresent(entity::setPortfolio);
+        PortfolioEntity portfolioEntity = new PortfolioEntity();
+        portfolioEntity.setId(holding.getPortfolioId());
+        entity.setPortfolio(portfolioEntity);
         return entity;
     }
 

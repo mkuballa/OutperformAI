@@ -8,10 +8,12 @@ import de.mk.portfolio.domain.port.out.*;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.math.RoundingMode;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.Random;
 
 @Service
 public class PortfolioService implements
@@ -60,28 +62,44 @@ public class PortfolioService implements
 
     @Override
     public List<Holding> getHoldings(UUID portfolioId) {
-        // Return dummy data for now
-        return List.of(
-                Holding.builder().id(UUID.randomUUID()).portfolioId(portfolioId).name("Apple Inc.").symbol("AAPL").quantity(10).price(new BigDecimal("175.00")).purchasePrice(new BigDecimal("150.00")).purchaseDate(LocalDate.now().minusMonths(6)).dailyChangeValue(new BigDecimal("1.50")).dailyChangePercent(new BigDecimal("0.86")).totalChangeValue(new BigDecimal("250.00")).totalChangePercent(new BigDecimal("16.67")).build(),
-                Holding.builder().id(UUID.randomUUID()).portfolioId(portfolioId).name("Google LLC").symbol("GOOGL").quantity(5).price(new BigDecimal("2800.00")).purchasePrice(new BigDecimal("2500.00")).purchaseDate(LocalDate.now().minusMonths(3)).dailyChangeValue(new BigDecimal("-25.00")).dailyChangePercent(new BigDecimal("-0.88")).totalChangeValue(new BigDecimal("1000.00")).totalChangePercent(new BigDecimal("10.00")).build()
-        );
+        List<Holding> holdings = loadHoldingsPort.loadHoldings(portfolioId);
+        return holdings.stream().map(holding -> {
+            BigDecimal totalChangeValue = (holding.getPrice().subtract(holding.getPurchasePrice())).multiply(new BigDecimal(holding.getQuantity()));
+            BigDecimal totalChangePercent = BigDecimal.ZERO;
+            if (holding.getPurchasePrice().multiply(new BigDecimal(holding.getQuantity())).compareTo(BigDecimal.ZERO) != 0) {
+                totalChangePercent = totalChangeValue.divide(holding.getPurchasePrice().multiply(new BigDecimal(holding.getQuantity())), 4, RoundingMode.HALF_UP).multiply(new BigDecimal(100));
+            }
+            return Holding.builder()
+                    .id(holding.getId())
+                    .portfolioId(holding.getPortfolioId())
+                    .name(holding.getName())
+                    .symbol(holding.getSymbol())
+                    .quantity(holding.getQuantity())
+                    .price(holding.getPrice())
+                    .purchasePrice(holding.getPurchasePrice())
+                    .purchaseDate(holding.getPurchaseDate())
+                    .dailyChangeValue(holding.getDailyChangeValue())
+                    .dailyChangePercent(holding.getDailyChangePercent())
+                    .totalChangeValue(totalChangeValue)
+                    .totalChangePercent(totalChangePercent)
+                    .logoUrl(holding.getLogoUrl())
+                    .build();
+        }).collect(Collectors.toList());
     }
 
     @Override
     public List<PortfolioHistory> getPortfolioHistory(UUID portfolioId, String range) {
-        // Return dummy data for now
-        return List.of(
-                PortfolioHistory.builder().id(UUID.randomUUID()).date(LocalDate.now().minusDays(4)).value(new BigDecimal("10000.00")).build(),
-                PortfolioHistory.builder().id(UUID.randomUUID()).date(LocalDate.now().minusDays(3)).value(new BigDecimal("10100.00")).build(),
-                PortfolioHistory.builder().id(UUID.randomUUID()).date(LocalDate.now().minusDays(2)).value(new BigDecimal("10050.00")).build(),
-                PortfolioHistory.builder().id(UUID.randomUUID()).date(LocalDate.now().minusDays(1)).value(new BigDecimal("10200.00")).build(),
-                PortfolioHistory.builder().id(UUID.randomUUID()).date(LocalDate.now()).value(new BigDecimal("10300.00")).build()
-        );
+        return loadPortfolioHistoryPort.loadPortfolioHistory(portfolioId, range);
     }
 
     @Override
     public Holding addStock(AddStockCommand command) {
         Portfolio portfolio = getPortfolio(); // This will create a dummy portfolio if none exists
+
+        // Simulate a random price change
+        BigDecimal purchasePrice = command.purchasePrice();
+        double percentageChange = (new Random().nextDouble() * 0.2) - 0.1; // -0.1 to 0.1
+        BigDecimal price = purchasePrice.multiply(BigDecimal.ONE.add(new BigDecimal(percentageChange)));
 
         Holding newHolding = Holding.builder()
                 .id(UUID.randomUUID())
@@ -89,19 +107,20 @@ public class PortfolioService implements
                 .name(command.symbol() + " Company") // Dummy name for now
                 .symbol(command.symbol())
                 .quantity(command.quantity().intValue()) // Assuming quantity is int for Holding model
-                .price(command.purchasePrice()) // Set current price to purchase price for simplicity
-                .purchasePrice(command.purchasePrice())
+                .price(price) // Set current price with random change
+                .purchasePrice(purchasePrice)
                 .purchaseDate(command.purchaseDate())
                 .dailyChangeValue(BigDecimal.ZERO)
                 .dailyChangePercent(BigDecimal.ZERO)
                 .totalChangeValue(BigDecimal.ZERO)
                 .totalChangePercent(BigDecimal.ZERO)
+                .logoUrl("https://logo.clearbit.com/" + command.symbol().toLowerCase() + ".com")
                 .build();
 
         Holding savedHolding = saveHoldingPort.saveHolding(newHolding);
 
         // Update portfolio total value (simplified for now)
-        BigDecimal newTotalValue = portfolio.getTotalValue().add(command.purchasePrice().multiply(command.quantity()));
+        BigDecimal newTotalValue = portfolio.getTotalValue().add(price.multiply(command.quantity()));
         portfolio = portfolio.withTotalValue(newTotalValue);
         savePortfolioPort.savePortfolio(portfolio);
 

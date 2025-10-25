@@ -16,6 +16,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "build:force": "react-scripts build -- --output-filename=[name].[contenthash].js",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

@@ -96,10 +96,13 @@ public class PortfolioController {
                 holding.getSymbol(),
                 holding.getQuantity(),
                 holding.getPrice(),
+                holding.getPurchasePrice(),
+                holding.getPurchaseDate(),
                 holding.getDailyChangeValue(),
                 holding.getDailyChangePercent(),
                 holding.getTotalChangeValue(),
-                holding.getTotalChangePercent()
+                holding.getTotalChangePercent(),
+                holding.getLogoUrl()
         );
     }
 
@@ -126,10 +129,13 @@ public class PortfolioController {
             String symbol,
             Integer quantity,
             BigDecimal price,
+            BigDecimal purchasePrice,
+            LocalDate purchaseDate,
             BigDecimal dailyChangeValue,
             BigDecimal dailyChangePercent,
             BigDecimal totalChangeValue,
-            BigDecimal totalChangePercent
+            BigDecimal totalChangePercent,
+            String logoUrl
     ) {}
 
     record PortfolioHistoryResponse(

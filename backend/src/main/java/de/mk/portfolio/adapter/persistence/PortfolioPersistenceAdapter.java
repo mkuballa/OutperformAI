@@ -78,7 +78,7 @@ public class PortfolioPersistenceAdapter implements
                 .dailyChangePercent(entity.getDailyChangePercent() != null ? entity.getDailyChangePercent() : BigDecimal.ZERO)
                 .totalChangeValue(entity.getTotalChangeValue() != null ? entity.getTotalChangeValue() : BigDecimal.ZERO)
                 .totalChangePercent(entity.getTotalChangePercent() != null ? entity.getTotalChangePercent() : BigDecimal.ZERO)
-                .holdings(entity.getHoldings().stream().map(this::mapToDomain).collect(Collectors.toList())) // Add this line
+                .holdings(entity.getHoldings().stream().map(h -> mapToDomain(h)).collect(Collectors.toList()))
                 .build();
     }
 
